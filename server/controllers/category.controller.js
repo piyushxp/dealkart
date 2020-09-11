@@ -1,6 +1,6 @@
 const Category = require("../models/Category");
 const { validationResult } = require("express-validator");
-
+const mongoose = require('mongoose')
 // @route   POST api/category
 // @desc    Create Category
 // @access  Private Admin
@@ -39,9 +39,39 @@ exports.addCategory = async (req, res, next) => {
 	res.send("OKAY,Admin Authorization Accepted");
 };
 
+
+// @route   POST api/category/all
+// @desc    Get all  Category
+// @access  Public 
+
 exports.getAllCategory = async(req, res) => {
 	try {
 		const data = await Category.find({})
+		res.json(data)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send("server error")
+		
+	}
+};
+
+
+
+
+// @route   POST api/category/:categoryId
+// @desc    Get single  Category
+// @access  Public 
+
+exports.getCategoryById = async(req, res) => {
+	try {
+		const {categoryId} = req.params
+    
+		if(!mongoose.Types.ObjectId.isValid(categoryId)){
+			return res.status(403).json({
+				error:"category not found"
+			})
+		}
+		const data = await Category.findById({_id:categoryId})
 		res.json(data)
 	} catch (error) {
 		console.log(error)
