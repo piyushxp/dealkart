@@ -17,7 +17,7 @@ exports.userRegisterValidator = [
 
 
 
-//user Signin Validator
+//user Login Validator
 exports.userLoginValidator = [
 	check("email").isEmail().withMessage("Must be a valid email is required"),
 	check("password")

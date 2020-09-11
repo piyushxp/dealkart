@@ -7,6 +7,10 @@ const User = require("../models/User");
 const {validationResult } = require("express-validator");
 const gravatar = require("gravatar"); // get user image by email
 
+
+// @route   POST api/user/register
+// @desc    Register user
+// @access  Public
 exports.register = async (req, res) => {
 	console.log(req.body);
 	const errors = validationResult(req);
@@ -85,11 +89,93 @@ exports.register = async (req, res) => {
 }
 
 
+// @route   POST api/user
+// @desc    User Information
+// @access  Private
+exports.profile = async (req, res) => {
+	try {
+		// get user information by id
+		const user = await User.findById(req.user.id).select("-password");
+		res.json(user);
+	} catch (error) {
+		console.log(err.message);
+		res.status(500).send("Server Error");
+	}
+}
 
+// @route   POST api/user/login
+// @desc    Login user
+// @access  Public
+exports.login = async (req, res) => {
+	// If error
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array(),
+		});
+	}
 
+	//if no errors from validation
+	// get email and password from request body
+	const { email, password } = req.body;
 
+	try {
+		// Check for user
+		let user = await User.findOne({
+			email,
+		});
 
+		// If User doesn't Exist return with error
+		if (!user) {
+			return res.status(400).json({
+				errors: [
+					{
+						msg: "Invalid credentials",
+					},
+				],
+			});
+		}
 
+		// If User found,compare Password her
+		const isMatch = await bcrypt.compare(password, user.password);
+
+		// If passwords don't match,Return
+		if (!isMatch) {
+			return res.status(400).json({
+				errors: [
+					{
+						msg: "Invalid credentials",
+					},
+				],
+			});
+		}
+
+		// payload for jwt
+		const payload = {
+			user: {
+				id: user.id,
+			},
+		};
+
+		jwt.sign(
+			payload,
+			process.env.JWT_SECRET,
+			{
+				expiresIn: 360000,
+			},
+			(err, token) => {
+				if (err) throw err;
+				res.json({
+					token,
+					msg: "You have succesfully Logged in "
+				});
+			}
+		);
+	} catch (error) {
+		console.log(error.message);
+		res.status(500).send("Server error");
+	}
+}
 
 
 
