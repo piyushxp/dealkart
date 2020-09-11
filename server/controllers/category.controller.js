@@ -80,6 +80,56 @@ exports.getCategoryById = async(req, res) => {
 	}
 };
 
+// @route   PUT api/category/:categoryId
+// @desc    Update single  Category
+// @access  Private 
+
+exports.updateCategoryById = async(req, res) => {
+	try {
+		const {categoryId} = req.params
+		const {name} = req.body
+    
+		if(!mongoose.Types.ObjectId.isValid(categoryId)){
+			return res.status(403).json({
+				error:"category not found"
+			})
+		}
+		const data = await Category.findOneAndUpdate({_id:categoryId}, {name}, {
+			new: true,
+		})
+		res.json(data)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send("server error")
+		
+	}
+};
+
+
+// @route   DELETE api/category/:categoryId
+// @desc    DELETE single  Category
+// @access  Private 
+exports.deleteCategoryById = async(req, res) => {
+	try {
+		const {categoryId} = req.params
+
+    
+		if(!mongoose.Types.ObjectId.isValid(categoryId)){
+			return res.status(403).json({
+				error:"category not found"
+			})
+		}
+		const data = await Category.findOneAndDelete({_id:categoryId})
+		res.json({data:`${data.name} has been Deleted Successfully`})
+	} catch (error) {
+		console.log(error)
+		res.status(500).send("server error")
+		
+	}
+};
+
+
+
 // exports.requireSignin = (req, res, next) => {
 // 	const token = req.headers.authorization.split(" ")[1];
 // 	const user = jwt.verify(token, process.env.JWT_SECRET);
