@@ -1,8 +1,6 @@
-const express = require("express");
-const router = express.Router();
 const Product = require("../models/Product");
-const auth = require("../middleware/auth");
-const adminAuth = require("../middleware/adminAuth");
+
+const mongoose = require("mongoose");
 
 const formidable = require("formidable");
 const fs = require("fs");
@@ -75,4 +73,34 @@ exports.createProduct = async (req, res) => {
 	});
 };
 
+// @route   GET api/product/ProductId
+// @desc    GEt Product Deatils
+// @access  Public
 
+exports.getProductDetails = async (req, res, next) => {
+	const { productId } = req.params;
+
+	if (!mongoose.Types.ObjectId.isValid(productId)) {
+		return res.status(403).json({
+			error: "Product not Found,Please check the Product Id",
+		});
+	}
+
+	try {
+		let product = await Product.findById({ _id: productId }).populate(
+			"category"
+		);
+		console.log(product);
+		if (!product) return res.status(403).json({ error: "Product Not Found" });
+		// return res.status(200).json(product);
+
+		//passing it to a middleware
+
+		req.product = product;
+	} catch (error) {
+		console.log(error);
+		res.json("server Error");
+	}
+
+	next();
+};
