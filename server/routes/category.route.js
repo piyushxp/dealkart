@@ -1,6 +1,6 @@
 const express = require('express')
 
-const {signup,signin,requireSignin} = require('../controllers/adminController.js')
+const {signup,signin,requireSignin} = require('../controllers/category.controller.js')
 
 const router = express.Router()
 
