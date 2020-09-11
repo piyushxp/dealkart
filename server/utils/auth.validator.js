@@ -26,6 +26,12 @@ exports.userLoginValidator = [
 ];
 
 
+//name Validator
+exports.nameValidator = [
+	check("name","Name is Required").trim().not().isEmpty()
+];
+
+
 // exports.forgotPasswordValidator = [
 // 	check("email")
 // 		.not()

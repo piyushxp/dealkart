@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
+module.exports = (req, res, next) => { 
 	//Get token from header first
 
 	const token = req.header("x-auth-token");
@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
 		req.user = decoded.user;
 		next();
 	} catch (error) {
-		req.status(401).json({
+		res.status(401).json({
 			msg: "Token is not Valid.Try Again",
 		});
 	}
