@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 //import middleware
-// const auth = require("../middleware/auth");
+const auth = require("../middleware/auth");
 
 //import validator
 const {
@@ -14,7 +14,9 @@ const {
 //import controller
 const { profile, register, login } = require("../controllers/auth.controller");
 
-router.get("/", profile);
+
+//Auth Routes
+router.get("/profile",auth, profile);
 router.post("/register", userRegisterValidator, register);
 router.post("/login", userLoginValidator, login);
 

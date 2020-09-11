@@ -94,6 +94,7 @@ exports.register = async (req, res) => {
 // @access  Private
 exports.profile = async (req, res) => {
 	try {
+		console.log(req.user)
 		// get user information by id
 		const user = await User.findById(req.user.id).select("-password");
 		res.json(user);
