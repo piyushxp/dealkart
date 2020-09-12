@@ -77,8 +77,9 @@ exports.createProduct = async (req, res) => {
 // @desc    GEt Product Deatils
 // @access  Public
 
-exports.getProductDetails = async (req, res, next) => {
+exports.getProductDetails = async (req, res) => {
 	const { productId } = req.params;
+	console.log("piiyusheeeee")
 
 	if (!mongoose.Types.ObjectId.isValid(productId)) {
 		return res.status(403).json({
@@ -94,13 +95,85 @@ exports.getProductDetails = async (req, res, next) => {
 		if (!product) return res.status(403).json({ error: "Product Not Found" });
 		// return res.status(200).json(product);
 
-		//passing it to a middleware
+		//avoid sending product image
+		product.photo = undefined
 
-		req.product = product;
+		//send the deatils of product
+		return res.status(200).json(product)
+
 	} catch (error) {
 		console.log(error);
 		res.json("server Error");
 	}
 
-	next();
+
 };
+
+
+// @route   GET api/product/photo/ProductId
+// @desc    GEt Product Photo
+// @access  Public
+
+exports.getProductPhoto = async (req, res, next) => {
+	const { productId } = req.params;
+console.log("piiyusheeeee")
+
+
+	//check for mongoid valid
+	if (!mongoose.Types.ObjectId.isValid(productId)) {
+		return res.status(403).json({
+			error: "Product not Found,Please check the Product Id",
+		});
+	}
+
+	try {
+		let product = await Product.findById({ _id: productId })
+		console.log(product)
+		//check
+		if (!product) return res.status(403).json({ error: "Product Not Found" });
+		if(!product.photo.data) return res.status(403).json({ error: "Product Image Not Available" });
+		// return res.status(200).json(product);
+
+		if(product.photo.data){
+			res.set('Content-Type',product.photo.contentType)
+			return res.send(product.photo.data)
+		}
+
+	} catch (error) {
+		console.log(error);
+		res.json("server Error");
+	}
+
+	
+};
+
+
+// @route   GET api/product/list
+// @desc    GEt LIST OF PRODUCTS WITH FILTER
+/**
+ * @options  (order __ asc or desc)
+ *           (sortBy __ product name like name ,limit number of return products)
+ *  */   
+// @access  Public
+
+exports.getProductListAndFilter = async(req,res)=>{
+	let order = req.query.order ? req.query.order : 'asc'
+	let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+	let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+console.log("piiyusheeeee")
+
+	try {
+		let products = await Product.find({})
+		.select('-photo').populate('category').sort([
+			[sortBy,order]
+		]).limit(limit).exec()
+
+		res.json(products)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send("Please check the Query,Something went Wrong there I guess")
+	}
+
+
+	
+}

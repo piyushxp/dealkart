@@ -1,25 +1,20 @@
 const express = require('express')
 const router = express.Router()
 
+//import middleware here
 const auth = require('../middleware/auth')
 const adminAuth = require('../middleware/adminAuth')
 
+//import controllers here
+const {createProduct,getProductDetails,getProductPhoto,getProductListAndFilter} = require('../controllers/product.controller')
 
 
-const {createProduct,getProductDetails} = require('../controllers/product.controller')
-
+router.get('/list',getProductListAndFilter)
 router.post('/',auth,adminAuth,createProduct)
-router.get('/:productId',getProductDetails,(req,res)=>{
-    req.product.photo = undefined
+router.get('/:productId',getProductDetails)
+router.get('/photo/:productId',getProductPhoto)
 
-    return res.json(req.product)
-})
 
-router.get('/:productId',getProductDetails,(req,res)=>{
-    req.product.photo = undefined
-
-    return res.json(req.product)
-})
 
 
 module.exports = router
