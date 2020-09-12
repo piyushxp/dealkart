@@ -1,5 +1,5 @@
 node_modules
 dot.env
-config.env
+index.env
 plan.txt
-
+.env
