@@ -3,25 +3,24 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		required: [true, "Please Enter a Product Name"],
+		required: [true, "Please enter product name"],
 		trim: true,
-		maxLength: [100, "The max limit for name is 100 characters"],
+		maxLength: [100, "Product name cannot exceed 100 characters"],
 	},
 	price: {
 		type: Number,
-		required: [true, "Plese enter Price"],
+		required: [true, "Please enter product price"],
+		maxLength: [5, "Product name cannot exceed 5 characters"],
 		default: 0.0,
 	},
 	description: {
 		type: String,
-		required: [true, "Please Enter a Product Name"],
+		required: [true, "Please enter product description"],
 	},
-
 	ratings: {
 		type: Number,
 		default: 0,
 	},
-
 	images: [
 		{
 			public_id: {
@@ -34,10 +33,9 @@ const productSchema = new mongoose.Schema({
 			},
 		},
 	],
-
 	category: {
 		type: String,
-		required: [true, "Please select Category for this Product"],
+		required: [true, "Please select category for this product"],
 		enum: {
 			values: [
 				"Electronics",
@@ -47,18 +45,15 @@ const productSchema = new mongoose.Schema({
 				"Headphones",
 				"Food",
 				"Books",
-				"Clothes",
-				"Shoes",
+				"Clothes/Shoes",
 				"Beauty/Health",
 				"Sports",
-				"Outdoors",
+				"Outdoor",
 				"Home",
-				"Kitchen",
 			],
-			message: "Please Select Correct Category for Product",
+			message: "Please select correct category for product",
 		},
 	},
-
 	seller: {
 		type: String,
 		required: [true, "Please enter product seller"],
@@ -66,15 +61,13 @@ const productSchema = new mongoose.Schema({
 	stock: {
 		type: Number,
 		required: [true, "Please enter product stock"],
-		maxLength: [5, "Product name cant exceed 5 characters"],
+		maxLength: [5, "Product name cannot exceed 5 characters"],
 		default: 0,
 	},
-
 	numOfReviews: {
 		type: Number,
 		default: 0,
 	},
-
 	reviews: [
 		{
 			name: {
@@ -94,8 +87,8 @@ const productSchema = new mongoose.Schema({
 
 	createdAt: {
 		type: Date,
-		default: Date.now(),
+		default: Date.now,
 	},
 });
 
-module.exports = mongoose.model("Products", productSchema);
+module.exports = mongoose.model("Product", productSchema);
