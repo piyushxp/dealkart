@@ -60,7 +60,7 @@ const productSchema = new mongoose.Schema({
 	},
 
 	seller: {
-		type: string,
+		type: String,
 		required: [true, "Please enter product seller"],
 	},
 	stock: {
